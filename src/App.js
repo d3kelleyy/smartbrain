@@ -1,10 +1,16 @@
-import React, { Component } from 'react';
-import Particles from 'react-particles-js';
-import Navigation from './components/Navigation/Navigation';
-import Logo from './components/Logo/Logo';
-import Rank from './components/Rank/Rank';
-import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
-import './App.css';
+import React, { Component } from "react";
+import Particles from "react-particles-js";
+import Clarifai from "clarifai";
+import Navigation from "./components/Navigation/Navigation";
+import Logo from "./components/Logo/Logo";
+import Rank from "./components/Rank/Rank";
+import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
+import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
+import "./App.css";
+
+const app = new Clarifai.App({
+  apiKey: "536e7e13f6934be3bbe1b48e5c15598e",
+});
 
 const particlesOptions = {
   particles: {
@@ -12,42 +18,54 @@ const particlesOptions = {
       value: 80,
       density: {
         enable: true,
-        value_area: 800
-      }
+        value_area: 800,
+      },
     },
     shape: {
-      type: 'circle'
-    }
-  }
-}
+      type: "circle",
+    },
+  },
+};
 
 class App extends Component {
-  constructor(props) {
+  constructor() {
     super();
     this.state = {
-      input: '',
-    }
+      input: "",
+      imageUrl: "",
+    };
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value);
-  }
+    this.setState({ input: event.target.value });
+  };
 
   onButtonSubmit = () => {
-    console.log('click');
-  }
-
+    this.setState({ imageUrl: this.state.input });
+    app.models
+      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      .then((response) => {
+        console.log(
+          response.outputs[0].data.regions[0].region_info.bounding_box
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   render() {
     return (
       <div className="App">
-        <Particles className='particles' params={particlesOptions} />
+        <Particles className="particles" params={particlesOptions} />
         <Navigation />
         <Logo />
         <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-        {/* {
-          <FaceRecognition />} */}
+        <ImageLinkForm
+          onInputChange={this.onInputChange}
+          onButtonSubmit={this.onButtonSubmit}
+        />
+        <FaceRecognition imageUrl={this.state.imageUrl} />
       </div>
     );
   }
