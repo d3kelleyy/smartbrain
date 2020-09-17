@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const Signin = ({ onRouteChange }) => {
@@ -30,7 +31,7 @@ const Signin = ({ onRouteChange }) => {
               />
             </div>
           </fieldset>
-          <div className="">
+          <div>
             <input
               onClick={() => onRouteChange("home")}
               className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
