@@ -18,7 +18,7 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    fetch("http://localhost:3001/signin", {
+    fetch("http://localhost:3000/signin", {
       method: "post",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -28,7 +28,7 @@ class Signin extends React.Component {
     })
       .then((response) => response.json())
       .then((user) => {
-        if (user.id) {
+        if (user.id && user.email) {
           this.props.loadUser(user);
           this.props.onRouteChange("home");
         }
